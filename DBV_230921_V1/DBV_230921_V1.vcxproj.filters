@@ -18,12 +18,18 @@
     <ClInclude Include="image-io.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Funk.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="image-io.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Quelle.cpp">
+    <ClCompile Include="Funk.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
