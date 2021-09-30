@@ -9,5 +9,5 @@ void main()
 
 	readImage_ppm(bildein);
 
-	//viewImage_ppm();
+	viewImage_ppm();
 }
