@@ -16,7 +16,7 @@ void main() {
 		}
 		else if (choice == 2)		//Auswahl 2 ist
 		{
-			viewImage_ppm();
+			writeImage_ppm(bildein, 256, 256);
 		}
 		else if (choice == 3)		//Auswahl 3 ist viewImage_ppm();		
 		{
@@ -24,7 +24,7 @@ void main() {
 		}
 		else if (choice == 4)		
 		{
-
+			writeImage_ppm(bildein, 256, 256);
 		}
 		else if (choice == 5)		
 		{
