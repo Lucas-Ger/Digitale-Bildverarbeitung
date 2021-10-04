@@ -14,22 +14,22 @@ void main() {
 		{
 			readImage_ppm(bildein);
 		}
-		else if (choice == 2)		//Auswahl 2 ist
+		else if (choice == 2)		//Auswahl 2 ist writeImage_ppm(bildein, 256, 256)
 		{
-			viewImage_ppm();
+			writeImage_ppm(bildein, 256, 256);
 		}
 		else if (choice == 3)		//Auswahl 3 ist viewImage_ppm();		
 		{
 			viewImage_ppm();
 		}
-		else if (choice == 4)		
+		/*else if (choice == 4)		Platzhalter im Menu für spätere Erweiterungen
 		{
-
+			writeImage_ppm(bildein, 256, 256);
 		}
 		else if (choice == 5)		
 		{
 
-		}
+		}*/
 		else if (choice != 0)	//Gibt unteren Satz aus, falls Eingabe keine der oberen Auswahlen ist
 		{
 			printf("Bitte ueberpruefen sie ihre Eingabe !\n---- - \n");

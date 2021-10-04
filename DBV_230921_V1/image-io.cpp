@@ -101,6 +101,7 @@ void viewImage_ppm(void)
 	char	imagedir[128]="C:\\bv\\";
 	// char	viewer[256]="\"C:\\Program Files\\IrfanView\\i_view32.exe\" ";
 	char	viewer[256] = "\"C:\\Program Files\\IrfanView\\i_view64.exe\" ";
+	//char	viewer[256] = "\"C:\\bv\\\\i_view32.exe\" ";
 	char	fname[30];
 	char	dirbvdir[256]="dir C:\\bv\\*.ppm /B";
 
