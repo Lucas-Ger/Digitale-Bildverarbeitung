@@ -5,6 +5,7 @@
 void main() {
 	int choice;			//Variable zur Auswahl der Funktionen
 	unsigned char bildein[MAXXDIM][MAXYDIM];
+	unsigned char bildaus[MAXXDIM][MAXYDIM];
 
 	do
 	{
@@ -22,14 +23,18 @@ void main() {
 		{
 			viewImage_ppm();
 		}
-		/*else if (choice == 4)		Platzhalter im Menu für spätere Erweiterungen
+		else if (choice == 4)		
 		{
-			writeImage_ppm(bildein, 256, 256);
+			readImage_ppm(bildein);
+			dilate(bildein, bildaus);
+			writeImage_ppm(bildaus, 256, 256);
 		}
 		else if (choice == 5)		
 		{
-
-		}*/
+			readImage_ppm(bildein);
+			erode(bildein, bildaus);
+			writeImage_ppm(bildaus, 256, 256);
+		}
 		else if (choice != 0)	//Gibt unteren Satz aus, falls Eingabe keine der oberen Auswahlen ist
 		{
 			printf("Bitte ueberpruefen sie ihre Eingabe !\n---- - \n");
