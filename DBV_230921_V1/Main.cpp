@@ -35,6 +35,23 @@ void main() {
 			erode(bildein, bildaus);
 			writeImage_ppm(bildaus, 256, 256);
 		}
+		else if (choice == 6)	// Z‰hlen Pixel anders null
+		{
+			readImage_ppm(bildein);
+			pixelcount(bildein);
+		}
+		else if (choice == 7)	// ÷ffnen
+		{
+
+		}
+		else if (choice == 8)	// Schlieﬂen
+		{
+									
+		}
+		else if (choice == 9)	// GRASSFIRE
+		{
+
+		}
 		else if (choice != 0)	//Gibt unteren Satz aus, falls Eingabe keine der oberen Auswahlen ist
 		{
 			printf("Bitte ueberpruefen sie ihre Eingabe !\n---- - \n");

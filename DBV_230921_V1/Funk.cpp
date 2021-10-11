@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <string.h>
+#include <conio.h>
 #include "image-io.h"
 
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
 {
 	int abfrage;
-	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Bild dilatieren 4\n-Bild erodieren 5\n-Programm benden 0\nIhre Eingabe:");// \n-Platzhalter 4\n-Platzhalter 5 
+	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\nIhre Eingabe:");// \n-Platzhalter 4\n-Platzhalter 5 
 	scanf("%i", &abfrage);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 	return(abfrage);		//gibt die eingegebene Zahl an die Main-Funktion zurück
@@ -51,3 +52,21 @@ void erode(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDI
 		}
 	}
 }
+
+void pixelcount(unsigned char in[MAXXDIM][MAXYDIM])
+{
+	int counter = 0;
+	int x, y;
+
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			if (in[x][y] != 0)
+			{
+				counter++;
+			}
+		}
+	}
+
+	printf("\nIm gewaehlten Bild sind %i Pixel nicht schwarz\n", counter);
+}
+	
