@@ -42,11 +42,17 @@ void main() {
 		}
 		else if (choice == 7)	// ÷ffnen
 		{
-
+			readImage_ppm(bildein);
+			oeffnen(bildein, bildaus);
+			writeImage_ppm(bildaus, 256, 256);
+			viewImage_ppm();
 		}
 		else if (choice == 8)	// Schlieﬂen
 		{
-									
+			readImage_ppm(bildein);
+			schliessen(bildein, bildaus);
+			writeImage_ppm(bildaus, 256, 256);
+			viewImage_ppm();
 		}
 		else if (choice == 9)	// GRASSFIRE
 		{
