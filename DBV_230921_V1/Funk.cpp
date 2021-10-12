@@ -201,6 +201,9 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 			printf("X-erhöht");
 			for (y = 0; y < MAXYDIM; y++) {
 				printf("y-erhöht");
+
+				n2 = n1;
+
 				//dilatation in temporäre
 				if (in[x][y] != 0) {
 					temp[x][y] = 255;
@@ -210,15 +213,15 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 					temp[x][y + 1] = 255;
 
 					if (in[x][y] != 0 && temp[x][y] != 0) { out[x][y] = 255; }
-					if (in[x-1][y] != 0 && temp[x-1][y] != 0) { out[x-1][y] = 255; }
-					if (in[x+1][y] != 0 && temp[x+1][y] != 0) { out[x+1][y] = 255; }
-					if (in[x][y-1] != 0 && temp[x][y-1] != 0) { out[x][y-1] = 255; }
-					if (in[x][y+1] != 0 && temp[x][y+1] != 0) { out[x][y+1] = 255; }
-	
+					if (in[x - 1][y] != 0 && temp[x - 1][y] != 0) { out[x - 1][y] = 255; }
+					if (in[x + 1][y] != 0 && temp[x + 1][y] != 0) { out[x + 1][y] = 255; }
+					if (in[x][y - 1] != 0 && temp[x][y - 1] != 0) { out[x][y - 1] = 255; }
+					if (in[x][y + 1] != 0 && temp[x][y + 1] != 0) { out[x][y + 1] = 255; }
+
 					zündpunktfund = true;
 				}
 
-				if (x == MAXXDIM-1 && y == MAXYDIM-1) { 
+				if (x == MAXXDIM - 1 && y == MAXYDIM - 1) {
 					printf("es wurden %i Objekte gefunden\n", objektzahl);
 					check = true;
 				}
@@ -229,21 +232,84 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 					x = MAXXDIM;
 					y = MAXYDIM;
 				}
-				n2 = n1;
 			}
-		}
 
-		objektzahl++;
 
-		for (x = 0; x < MAXXDIM; x++) {
-			for (y = 0; y < MAXYDIM; y++) {
-				if (in[x][y] != 0 && out[x][y] != 0) {
-					in[x][y] = 0;
+			if (n2 == n1 && zündpunktfund == true) {
+				objektzahl++;
+
+				for (x = 0; x < MAXXDIM; x++) {
+					for (y = 0; y < MAXYDIM; y++) {
+						if (in[x][y] != 0 && out[x][y] != 0) {
+							in[x][y] = 0;
+						}
+					}
 				}
-			}
-		}
 
+			}
+		
+		
+		}
 
 	}
 
 }
+
+void grassfire2(unsigned char in[MAXXDIM][MAXYDIM]) {
+
+	bool check = false;
+	int objektzahl = 0;
+	int n1 = 0, n2 = 0;
+	unsigned char out[MAXXDIM][MAXYDIM];
+	unsigned char temp[MAXXDIM][MAXYDIM];
+	int x, y;
+
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+			temp[x][y] = 0;
+		}
+	}
+
+
+	for (x = 0; x < MAXXDIM; x++){
+		for (y = 0; y < MAXYDIM; y++) {
+
+			if (in[x][y] != 0) {
+				temp[x][y] = 255;
+				temp[x - 1][y] = 255;
+				temp[x + 1][y] = 255;
+				temp[x][y - 1] = 255;
+				temp[x][y + 1] = 255;
+
+				if (in[x][y] != 0 && temp[x][y] != 0) { out[x][y] = 255; }
+				if (in[x - 1][y] != 0 && temp[x - 1][y] != 0) { out[x - 1][y] = 255; }
+				if (in[x + 1][y] != 0 && temp[x + 1][y] != 0) { out[x + 1][y] = 255; }
+				if (in[x][y - 1] != 0 && temp[x][y - 1] != 0) { out[x][y - 1] = 255; }
+				if (in[x][y + 1] != 0 && temp[x][y + 1] != 0) { out[x][y + 1] = 255; }
+			
+				n1 = pixelcount_return(out);
+				if (n1 == n2) {
+					objektzahl++;
+					int x1, y1;
+					for (x1 = 0; x1 < MAXXDIM; x1++) {
+						for (y1 = 0; y1 < MAXYDIM; y1++) {
+							if (out[x1][y1] != 0) {
+								in[x1][y1] = 0;
+							}
+						}
+					}
+
+				}
+				n2 = n1;
+
+			}//ede if
+
+
+		}//ende for Y
+	}//ende for X
+	printf("%i\n", objektzahl);
+
+
+}//ende fkt
+	

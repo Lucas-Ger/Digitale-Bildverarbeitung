@@ -57,7 +57,7 @@ void main() {
 		else if (choice == 9)	// GRASSFIRE
 		{
 			readImage_ppm(bildein);
-			grassfire(bildein);
+			grassfire2(bildein);
 		}
 		else if (choice != 0)	//Gibt unteren Satz aus, falls Eingabe keine der oberen Auswahlen ist
 		{
