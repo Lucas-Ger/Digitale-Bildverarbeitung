@@ -5,22 +5,23 @@
 
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
 {
-	int abfrage;
+	int choice;
 	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Programm beenden 0\nIhre Eingabe:");
-	scanf("%i", &abfrage);		//wartet auf die Eingabe einer Zahl
+	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
-	return(abfrage);		//gibt die eingegebene Zahl an die Main-Funktion zurück
+	return(choice);		//gibt die eingegebene Zahl an die Main-Funktion zurück
 }
 
-
+//Funktion dilatieren
 void dilate(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM])
-{
+{	//out-array nullen (schwarz stellen)
 	int x, y;
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
 			out[x][y] = 0;
 		}
 	}
+	//an allen weißen Pixeln die ganze Elementarraute setzen
 	for (x = 1; x < MAXXDIM-1; x++) {
 		for (y = 1; y < MAXYDIM-1; y++) {
 			if (in[x][y] == 255) {
@@ -34,14 +35,16 @@ void dilate(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYD
 	}
 }
 
+//Funktion erodieren
 void erode(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM])
-{
+{	//out-array nullen (schwarz stellen)
 	int x, y;
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
 			out[x][y] = 0;
 		}
 	}
+	//an allen weißen Pixeln auf Elementarraute prüfen und ausgangsbit setzen
 	for (x = 1; x < MAXXDIM - 1; x++) {
 		for (y = 1; y < MAXYDIM - 1; y++) {
 			if (in[x][y] == 255) {
@@ -53,11 +56,12 @@ void erode(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDI
 	}
 }
 
+//Funktion Pixel-zählen mit direkter Ausgabe
 void pixelcount(unsigned char in[MAXXDIM][MAXYDIM])
 {
 	int counter = 0;
 	int x, y;
-
+	//für alle nicht schwarzen Pixel den counter um 1 erhöhen
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
 			if (in[x][y] != 0)
@@ -70,11 +74,12 @@ void pixelcount(unsigned char in[MAXXDIM][MAXYDIM])
 	printf("\nIm gewaehlten Bild sind %i Pixel nicht schwarz\n", counter);
 }
 
+//Funktion Pixel-zählen mit Anzahl als Rückgabe
 int pixelcount_return(unsigned char in[MAXXDIM][MAXYDIM])
 {
 	int counter = 0;
 	int x, y;
-
+	//für alle nicht schwarzen Pixel den counter um 1 erhöhen
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
 			if (in[x][y] != 0)
@@ -87,108 +92,134 @@ int pixelcount_return(unsigned char in[MAXXDIM][MAXYDIM])
 	return counter;
 }
 
+
+//Funktion öffnen - eingegebene Anzahl erst erodieren, dann dilatieren
 void oeffnen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM])
 {
-	int abfrage;
+	int choice;
 	int i;
-	unsigned char zwischen1 [MAXXDIM][MAXYDIM];
-	unsigned char zwischen2 [MAXXDIM][MAXYDIM];
+	unsigned char temp1 [MAXXDIM][MAXYDIM];
+	unsigned char temp2 [MAXXDIM][MAXYDIM];
+
+	//out- und temp-arrays nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+			temp1[x][y] = 0;
+			temp2[x][y] = 0;
+		}
+	}
 	
 	printf("\nWie oft soll das Bild geoeffnet werden?\nIhre Eingabe:");
-	scanf("%i", &abfrage);		//wartet auf die Eingabe einer Zahl
+	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 
-	if (abfrage == 0)
-	{
+	//wenn null mal - skip
+	if (choice == 0){}
+	//ein Mal
+	else if (choice == 1){
+		erode(in, temp1);
+		dilate(temp1, out);
 	}
-	else if (abfrage == 1)
-	{
-		erode(in, zwischen1);
-		dilate(zwischen1, out);
-	}
-	else if (abfrage != 1)
-	{
-		erode(in, zwischen1);
-		for (i = 1; i < abfrage; i++)
+	//mehrere Male
+	else if (choice != 1){
+		//erst erodieren
+		erode(in, temp1);
+		for (i = 1; i < choice; i++)
 		{
-			erode(zwischen1, zwischen2);
+			erode(temp1, temp2);
 			for (int x = 0; x < MAXXDIM; x++) {
 				for (int y = 0; y < MAXYDIM; y++) {
-					zwischen1[x][y] = zwischen2[x][y];
+					temp1[x][y] = temp2[x][y];
 				}
 			}
 		}
-		for (i = 1; i < abfrage; i++)
+		//dann dilatieren
+		for (i = 1; i < choice; i++)
 		{
-			dilate(zwischen1, zwischen2);
+			dilate(temp1, temp2);
 			for (int x = 0; x < MAXXDIM; x++) {
 				for (int y = 0; y < MAXYDIM; y++) {
-					zwischen1[x][y] = zwischen2[x][y];
+					temp1[x][y] = temp2[x][y];
 				}
 			}
 		}
-		dilate(zwischen1, out);
+		dilate(temp1, out);
 	}
 }
 
+
+//Funktion schließen - eingegebene Anzahl erst dilatieren, dann erodieren
 void schliessen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM])
 {
-	int abfrage;
+	int choice;
 	int i;
-	unsigned char zwischen1[MAXXDIM][MAXYDIM];
-	unsigned char zwischen2[MAXXDIM][MAXYDIM];
+	unsigned char temp1[MAXXDIM][MAXYDIM];
+	unsigned char temp2[MAXXDIM][MAXYDIM];
+
+	//out- und temp-arrays nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+			temp1[x][y] = 0;
+			temp2[x][y] = 0;
+		}
+	}
 
 	printf("\nWie oft soll das Bild geschlossen werden?\nIhre Eingabe:");
-	scanf("%i", &abfrage);		//wartet auf die Eingabe einer Zahl
+	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 
-	if (abfrage == 0)
-	{
+	//wenn null mal - skip
+	if (choice == 0){}
+	//ein Mal
+	else if (choice == 1){
+		dilate(in, temp1);
+		erode(temp1, out);
 	}
-	else if (abfrage == 1)
-	{
-		dilate(in, zwischen1);
-		erode(zwischen1, out);
-	}
-	else if (abfrage != 1)
-	{
-		dilate(in, zwischen1);
-		for (i = 1; i < abfrage; i++)
+	//mehrere Male
+	else if (choice != 1){
+		//erst dilatieren
+		dilate(in, temp1);
+		for (i = 1; i < choice; i++)
 		{
-			dilate(zwischen1, zwischen2);
+			dilate(temp1, temp2);
 			for (int x = 0; x < MAXXDIM; x++) {
 				for (int y = 0; y < MAXYDIM; y++) {
-					zwischen1[x][y] = zwischen2[x][y];
+					temp1[x][y] = temp2[x][y];
 				}
 			}
 		}
-		for (i = 1; i < abfrage; i++)
+		//dann erodieren
+		for (i = 1; i < choice; i++)
 		{
-			erode(zwischen1, zwischen2);
+			erode(temp1, temp2);
 			for (int x = 0; x < MAXXDIM; x++) {
 				for (int y = 0; y < MAXYDIM; y++) {
-					zwischen1[x][y] = zwischen2[x][y];
+					temp1[x][y] = temp2[x][y];
 				}
 			}
 		}
-		erode(zwischen1, out);
+		erode(temp1, out);
 	}
 }
 
 
-
+//Funktion grassfire algorythmus
 void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 
-	bool check = false;
+	//Variablendeklaration
 	int objektzahl = 0;
 	int n1 = 0, n2 = 0;
 	unsigned char out[MAXXDIM][MAXYDIM];
 	unsigned char temp[MAXXDIM][MAXYDIM];
 	int x, y;
 	bool zündpunktfund = false;
-	bool zeile = false;
 	int xfound;
 
+	//out- und temp-array nullen (schwarz stellen)
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
 			out[x][y] = 0;
@@ -196,18 +227,21 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 		}
 	}
 
-
+	//einmal durch das gesammte Bild durchgehen
 	for (x = 1; x < MAXXDIM-1; x++){
 		for (y = 1; y < MAXYDIM-1; y++) {
 
+			//sobald ein Pixel nicht schwarz ist:
 			if (in[x][y] != 0) {
 
+				//im temporären-array die elementarraute setzen
 				temp[x][y] = 255;
 				temp[x - 1][y] = 255;
 				temp[x + 1][y] = 255;
 				temp[x][y - 1] = 255;
 				temp[x][y + 1] = 255;
 
+				//temp mit in addieren und ergebnis in out schreiben
 				if (in[x][y] != 0 && temp[x][y] != 0) { out[x][y] = 255; }
 				if (in[x - 1][y] != 0 && temp[x - 1][y] != 0) { out[x - 1][y] = 255; }
 				if (in[x + 1][y] != 0 && temp[x + 1][y] != 0) { out[x + 1][y] = 255; }
@@ -215,18 +249,18 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 				if (in[x][y + 1] != 0 && temp[x][y + 1] != 0) { out[x][y + 1] = 255; }
 			
 				zündpunktfund = true;
+				//alte anzahl gesetzter Pixel abspeichern und neu zählen
 				n2 = n1;
 				n1 = pixelcount_return(out);
-				zeile = true;
-				xfound = x;
-				
+				xfound = x;	
 			}
 
-			if (zeile == true && in[x][y] == 0) { x++; y = 0; zeile = false; }
-
-
-			if (n1 == n2 && zündpunktfund == true && in[x][y] == 0 && x > xfound+1) {
+			//Wenn sich die pixelzahl nicht mehr ändert und ein zündpunkt identifiziert wurde
+			//noch die aktuelle Zeite weiter analysieren um schräge konturen abzufangen
+			if (n1 == n2 && zündpunktfund == true  && x > xfound+1) {
+				//objektzahl erhöhen
 				objektzahl++;
+				//das out-bild vom in-bild abziehen
 				int x1, y1;
 				for (x1 = 0; x1 < MAXXDIM; x1++) {
 					for (y1 = 0; y1 < MAXYDIM; y1++) {
@@ -235,15 +269,16 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 						}
 					}
 				}
+				//nach neuem zündpunkt suchen
 				zündpunktfund = false;
 			}
 
-
-
 		}//ende for Y
 	}//ende for X
-	printf("%i\n", objektzahl);
 
+	//endet wenn das komplette Bild bearbeitet wurde und gibt die Objektzahl aus
+
+	printf("%i\n", objektzahl);
 
 }//ende fkt
 	
