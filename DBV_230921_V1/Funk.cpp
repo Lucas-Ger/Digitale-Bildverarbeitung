@@ -6,7 +6,7 @@
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
 {
 	int choice;
-	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Programm beenden 0\nIhre Eingabe:");
+	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Programm beenden 0\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 	return(choice);		//gibt die eingegebene Zahl an die Main-Funktion zurück
@@ -255,7 +255,7 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 				xfound = x;	
 			}
 
-			//Wenn sich die pixelzahl nicht mehr ändert und ein zündpunkt identifiziert wurde
+			//Wenn sich die pixelzahl nicht mehr ändert und ein Zündpunkt identifiziert wurde
 			//noch die aktuelle Zeite weiter analysieren um schräge konturen abzufangen
 			if (n1 == n2 && zündpunktfund == true  && x > xfound+1) {
 				//objektzahl erhöhen
@@ -281,4 +281,41 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 	printf("%i\n", objektzahl);
 
 }//ende fkt
+
+
+
+void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+
+	unsigned int grauwertzahl[256];
+	unsigned int maxgrauwertzahl = 0;
+	float wert;
+	int x, y, i;
+
+	//out- und temp-array nullen (schwarz stellen)
+	for (x = 0; x < MAXXDIM; x++) {
+		grauwertzahl[x] = 0;
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+		}
+	}
+	//grauwerte aufnehmen
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			grauwertzahl[in[x][y]] ++;
+		}
+	}
+	//maximale grauwertzahl suchen
+	for (i = 0; i < 255; i++) {
+		if (grauwertzahl[i] > maxgrauwertzahl) {
+			maxgrauwertzahl = grauwertzahl[i];
+		}
+	}
+	//histogramm schreiben
+	for (y = 0; y < MAXYDIM; y++) {
+		wert = (grauwertzahl[y] * 255 / maxgrauwertzahl );
+		for (x = MAXXDIM; x > (MAXXDIM - wert); x--) {
+			out[x][y] = 255;
+		}
+	}
+}
 	

@@ -60,6 +60,13 @@ void main() {
 			readImage_ppm(in);
 			grassfire(in);
 		}
+		else if (choice == 10)		//Auswahl 10 ist Histogramm
+		{
+			readImage_ppm(in);
+			histogramm(in, out);
+			writeImage_ppm(out, 256, 256);
+			viewImage_ppm();
+		}
 		else if (choice != 0)		//an sonsten falsche Eingabe: Gibt unteren Satz aus
 		{
 			printf("Bitte ueberpruefen sie ihre Eingabe !\n---- - \n");

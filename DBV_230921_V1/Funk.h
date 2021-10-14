@@ -17,3 +17,5 @@ extern void oeffnen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDI
 extern void schliessen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
 
 extern void grassfire(unsigned char in[MAXXDIM][MAXYDIM]);
+
+extern void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
