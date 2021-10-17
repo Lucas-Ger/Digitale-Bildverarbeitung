@@ -19,3 +19,7 @@ extern void schliessen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAX
 extern void grassfire(unsigned char in[MAXXDIM][MAXYDIM]);
 
 extern void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
+
+extern void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
+
+extern void GW_äqualisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);

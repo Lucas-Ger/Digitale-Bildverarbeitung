@@ -6,7 +6,7 @@
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
 {
 	int choice;
-	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Programm beenden 0\nIhre Eingabe:");
+	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Grauwert dehnung 11\n-Grauwert äqualisation 12\n-Programm beenden 0\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 	return(choice);		//gibt die eingegebene Zahl an die Main-Funktion zurück
@@ -318,4 +318,101 @@ void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 		}
 	}
 }
-	
+
+
+void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+	//Variablendeklaration
+	int x, y;
+	int E_min = 255, E_max = 0;
+	float value;
+
+	//out-array nullen (schwarz stellen)
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+		}
+	}
+
+	//Abfrage E_min & E_max
+	printf("\nDehnung der Grauwertstala\n 0 - fuer automatische Einstellung\n E min: ");
+	scanf("%i", &E_min);
+	if (E_min == 0) {
+		E_min = 255;
+		//maximalen und minimalen grauwert suchen
+		for (x = 0; x < MAXXDIM; x++) {
+			for (y = 0; y < MAXYDIM; y++) {
+				if (in[x][y] < E_min) { E_min = in[x][y]; }
+				if (in[x][y] > E_max) { E_max = in[x][y]; }
+			}
+		}
+	}
+	else {
+		printf(" E max: ");
+		scanf("%i", &E_max);
+	}
+
+	//Grauwertdehnung nach Formel
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			value = 255.0 / (E_max - E_min) * (in[x][y] - E_min);
+			out[x][y] = int(value);
+		}
+	}
+}
+
+void GW_äqualisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+	//Variablendeklaration
+	int x, y;
+	int distance;
+	int gw, n;
+	int search_gw = 0;
+
+	//gesetzte Pixel bestimmen
+	int pixel = pixelcount_return(in);
+
+	//Abfrage Grauwertabstand
+	printf("abstand der Grauwerte (1-254): ");
+	scanf("%i", &distance);
+	if (distance < 1 || distance > 254) { return; }
+	//anzahl an pixeln je Grauwert in Ausgabebild
+	float pixel_gw = pixel / 256 * distance;
+	pixel_gw = int(pixel_gw);
+
+	//out-array nullen (schwarz stellen)
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+		}
+	}
+
+	//in-Bild durchgehen
+	for (gw = 0; gw < 255; gw = gw + distance) {
+		n = 0;
+		while (n < pixel_gw) {
+			search_gw++;
+
+			for (x = 0; x < MAXXDIM; x++) {
+				for (y = 0; y < MAXYDIM; y++) {
+					//abbruch wenn pixelzahl erreicht ist
+					if (n >= pixel_gw) {
+						x = 255; y = 255; break;
+					}
+					if (search_gw > 255) {
+						return;
+					}
+
+					//grauwerte durchsuchen
+					if (in[x][y] == search_gw) {
+						out[x][y] = gw;
+						in[x][y] = 0;
+						n++;
+					}
+
+				}
+			}//end for
+
+		}//end while per GW
+
+	}//end for over all GW
+
+}//end of function
