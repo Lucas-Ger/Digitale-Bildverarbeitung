@@ -6,7 +6,7 @@
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
 {
 	int choice;
-	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Grauwert dehnung 11\n-Grauwert äqualisation 12\n-Programm beenden 0\nIhre Eingabe:");
+	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Grauwert dehnung 11\n-Grauwert aequalisation 12\n-Programm beenden 0\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 	return(choice);		//gibt die eingegebene Zahl an die Main-Funktion zurück
@@ -336,6 +336,7 @@ void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 	//Abfrage E_min & E_max
 	printf("\nDehnung der Grauwertstala\n 0 - fuer automatische Einstellung\n E min: ");
 	scanf("%i", &E_min);
+	if (E_min < 0 || E_min > 255) { printf("/nUnzulaessige Eingabe/n"); return; }
 	if (E_min == 0) {
 		E_min = 255;
 		//maximalen und minimalen grauwert suchen
@@ -349,6 +350,7 @@ void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 	else {
 		printf(" E max: ");
 		scanf("%i", &E_max);
+		if (E_max < E_min || E_max > 255) { printf("/nUnzulaessige Eingabe/n"); return; }
 	}
 
 	//Grauwertdehnung nach Formel
@@ -360,7 +362,7 @@ void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 	}
 }
 
-void GW_äqualisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+void GW_aequalisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	//Variablendeklaration
 	int x, y;
 	int anzahl;
@@ -374,7 +376,7 @@ void GW_äqualisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXD
 	//Abfrage Grauwertabstand
 	printf("Anzahl der Grauwerte (1-256): ");
 	scanf("%i", &anzahl);
-	if (anzahl < 1 || anzahl > 256) { return; }
+	if (anzahl < 1 || anzahl > 256) { printf("/nUnzulaessige Eingabe/n"); return; }
 	//distanz der Grauwerte
 	distance = 256 / anzahl;
 	distance = int(distance);

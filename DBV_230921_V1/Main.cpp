@@ -77,7 +77,7 @@ void main() {
 		else if (choice == 12)		//Auswahl 12 ist Grauwert äqualisation
 		{
 			readImage_ppm(in);
-			GW_äqualisation(in, out);
+			GW_aequalisation(in, out);
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
