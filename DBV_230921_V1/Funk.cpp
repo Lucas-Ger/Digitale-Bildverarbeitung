@@ -305,14 +305,14 @@ void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 		}
 	}
 	//maximale grauwertzahl suchen
-	for (i = 0; i < 255; i++) {
+	for (i = 0; i < 256; i++) {
 		if (grauwertzahl[i] > maxgrauwertzahl) {
 			maxgrauwertzahl = grauwertzahl[i];
 		}
 	}
 	//histogramm schreiben
 	for (y = 0; y < MAXYDIM; y++) {
-		wert = (grauwertzahl[y] * 255 / maxgrauwertzahl );
+		wert = (grauwertzahl[y] * 255.0 / maxgrauwertzahl );
 		for (x = MAXXDIM; x > (MAXXDIM - wert); x--) {
 			out[x][y] = 255;
 		}
