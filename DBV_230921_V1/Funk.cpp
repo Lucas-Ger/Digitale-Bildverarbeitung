@@ -305,14 +305,14 @@ void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 		}
 	}
 	//maximale grauwertzahl suchen
-	for (i = 0; i < 255; i++) {
+	for (i = 0; i <= 255; i++) {
 		if (grauwertzahl[i] > maxgrauwertzahl) {
 			maxgrauwertzahl = grauwertzahl[i];
 		}
 	}
 	//histogramm schreiben
 	for (y = 0; y < MAXYDIM; y++) {
-		wert = (grauwertzahl[y] * 255 / maxgrauwertzahl );
+		wert = (grauwertzahl[y] * 255.0 / maxgrauwertzahl );
 		for (x = MAXXDIM; x > (MAXXDIM - wert); x--) {
 			out[x][y] = 255;
 		}
@@ -363,20 +363,26 @@ void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 void GW_äqualisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	//Variablendeklaration
 	int x, y;
-	int distance;
+	int anzahl;
+	float distance, pixel_gw;
 	int gw, n;
-	int search_gw = 0;
+	int search_gw = -1;
 
 	//gesetzte Pixel bestimmen
-	int pixel = pixelcount_return(in);
+	int pixel = 256 * 256;//pixelcount_return(in);
 
 	//Abfrage Grauwertabstand
-	printf("abstand der Grauwerte (1-254): ");
-	scanf("%i", &distance);
-	if (distance < 1 || distance > 254) { return; }
+	printf("Anzahl der Grauwerte (1-256): ");
+	scanf("%i", &anzahl);
+	if (anzahl < 1 || anzahl > 256) { return; }
+	//distanz der Grauwerte
+	distance = 256 / anzahl;
+	distance = int(distance);
 	//anzahl an pixeln je Grauwert in Ausgabebild
-	float pixel_gw = pixel / 256 * distance;
+	pixel_gw = pixel / 256 * distance;
+	//in integer formatieren
 	pixel_gw = int(pixel_gw);
+
 
 	//out-array nullen (schwarz stellen)
 	for (x = 0; x < MAXXDIM; x++) {
@@ -386,8 +392,9 @@ void GW_äqualisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXD
 	}
 
 	//in-Bild durchgehen
-	for (gw = 0; gw < 255; gw = gw + distance) {
+	for (gw = 0; gw <= 255; gw = gw + distance) {
 		n = 0;
+		search_gw = 0;
 		while (n < pixel_gw) {
 			search_gw++;
 
