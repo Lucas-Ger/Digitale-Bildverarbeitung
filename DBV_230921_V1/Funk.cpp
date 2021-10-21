@@ -6,7 +6,7 @@
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
 {
 	int choice;
-	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Grauwert dehnung 11\n-Grauwert aequalisation 12\n-Programm beenden 0\nIhre Eingabe:");
+	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Grauwert dehnung 11\n-Grauwert aequalisation 12\n-Faltung 13\n-Programm beenden 0\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 	return(choice);		//gibt die eingegebene Zahl an die Main-Funktion zurück
@@ -425,3 +425,43 @@ void GW_aequalisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXX
 	}//end for over all GW
 
 }//end of function
+
+
+
+void Faltung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+
+	int matrix [3][3];
+	int eingabe;
+	printf("\nMittelwert: 1\nGauss: 2\n");
+	scanf("%i", &eingabe);
+	if (eingabe == 1) {
+		matrix[0][0] = 1;	matrix[1][0] = 1;	matrix[2][0] = 1;
+		matrix[0][1] = 1;	matrix[1][1] = 1;	matrix[2][1] = 1;
+		matrix[0][2] = 1;	matrix[1][2] = 1;	matrix[2][2] = 1;
+	}
+	else if (eingabe == 2) {
+		matrix[0][0] = 1;	matrix[1][0] = 2;	matrix[2][0] = 1;
+		matrix[0][1] = 2;	matrix[1][1] = 4;	matrix[2][1] = 2;
+		matrix[0][2] = 1;	matrix[1][2] = 2;	matrix[2][2] = 1;
+	}
+
+	//out-array nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+		}
+	}
+
+	//an allen weißen Pixeln auf Elementarraute prüfen und ausgangsbit setzen
+	for (x = 1; x < MAXXDIM - 1; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+			
+			out[x][y] = int( (	matrix[0][0] * in[x - 1][y - 1] + matrix[1][0] * in[x   ][y - 1] + matrix[2][0] * in[x + 1][y - 1]
+							+	matrix[0][1] * in[x - 1][y    ] + matrix[1][1] * in[x   ][y    ] + matrix[2][1] * in[x + 1][y    ]
+							+	matrix[0][2] * in[x - 1][y + 1] + matrix[1][2] * in[x   ][y + 1] + matrix[2][2] * in[x + 1][y + 1] 
+							 ) / (matrix[0][0] + matrix[1][0] + matrix[2][0] + matrix[0][1] + matrix[1][1] + matrix[2][1] + matrix[0][2] + matrix[1][2] + matrix[2][2]));
+
+		}
+	}
+}

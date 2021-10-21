@@ -81,6 +81,13 @@ void main() {
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
+		else if (choice == 13)		//Auswahl 12 ist Grauwert äqualisation
+		{
+			readImage_ppm(in);
+			Faltung(in, out);
+			writeImage_ppm(out, 256, 256);
+			viewImage_ppm();
+		}
 		else if (choice != 0)		//an sonsten falsche Eingabe: Gibt unteren Satz aus
 		{
 			printf("Bitte ueberpruefen sie ihre Eingabe !\n---- - \n");
