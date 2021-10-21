@@ -6,7 +6,23 @@
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
 {
 	int choice;
-	printf("\nMenu: \nFolgendes kann getan werden : \n-Bild einlesen 1\n-Bild speichern 2\n-Bild anzeigen 3\n-Dilate 4\n-Erode 5\n-Zaehlen der Pixel die nicht schwarz sind 6\n-Oeffnen 7\n-Schliessen 8\n-GRASSFIRE 9\n-Histogramm 10\n-Grauwert dehnung 11\n-Grauwert aequalisation 12\n-Faltung 13\n-Programm beenden 0\nIhre Eingabe:");
+	printf("\nMenu: \nFolgendes kann getan werden : ");
+	printf("\n-Bild einlesen 1");
+	printf("\n-Bild speichern 2");
+	printf("\n-Bild anzeigen 3");
+	printf("\n-Dilate 4");
+	printf("\n-Erode 5");
+	printf("\n-Zaehlen der Pixel die nicht schwarz sind 6");
+	printf("\n-Oeffnen 7");
+	printf("\n-Schliessen 8");
+	printf("\n-GRASSFIRE 9");
+	printf("\n-Histogramm 10");
+	printf("\n-Grauwert dehnung 11");
+	printf("\n-Grauwert aequalisation 12");
+	printf("\n-Faltung 13");
+	printf("\n-Median 14");
+	printf("\n-Programm beenden 0");
+	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
 	printf("\n");
 	return(choice);		//gibt die eingegebene Zahl an die Main-Funktion zurück
@@ -430,10 +446,23 @@ void GW_aequalisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXX
 
 void Faltung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 
-	int matrix [3][3];
+	int matrix [5][5];
 	int eingabe;
-	printf("\nMittelwert: 1\nGauss: 2\n");
+	printf("\nMittelwert:\t1");
+	printf("\nGauss:\t2");
+	printf("\ngewichteter Mittelwert 3x3:\t3");
+	printf("\ngewichteter Mittelwert 5x5:\t4\n");
 	scanf("%i", &eingabe);
+
+	//out-array nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+		}
+	}
+
+	//Matritzen setzen
 	if (eingabe == 1) {
 		matrix[0][0] = 1;	matrix[1][0] = 1;	matrix[2][0] = 1;
 		matrix[0][1] = 1;	matrix[1][1] = 1;	matrix[2][1] = 1;
@@ -444,6 +473,76 @@ void Faltung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 		matrix[0][1] = 2;	matrix[1][1] = 4;	matrix[2][1] = 2;
 		matrix[0][2] = 1;	matrix[1][2] = 2;	matrix[2][2] = 1;
 	}
+	else if (eingabe == 3) {
+		matrix[0][0] = 1;	matrix[1][0] = 1;	matrix[2][0] = 1;
+		matrix[0][1] = 1;	matrix[1][1] = 2;	matrix[2][1] = 1;
+		matrix[0][2] = 1;	matrix[1][2] = 1;	matrix[2][2] = 1;
+	}
+	else if (eingabe == 4) {
+		matrix[0][0] = 1;	matrix[1][0] = 1;	matrix[2][0] = 1;	matrix[3][0] = 1;	matrix[4][0] = 1;
+		matrix[0][1] = 1;	matrix[1][1] = 2;	matrix[2][1] = 2;	matrix[3][1] = 2;	matrix[4][1] = 1;
+		matrix[0][2] = 1;	matrix[1][2] = 2;	matrix[2][2] = 4;	matrix[3][2] = 2;	matrix[4][2] = 1;
+		matrix[0][3] = 1;	matrix[1][3] = 2;	matrix[2][3] = 2;	matrix[3][3] = 2;	matrix[4][3] = 1;
+		matrix[0][4] = 1;	matrix[1][4] = 1;	matrix[2][4] = 1;	matrix[3][4] = 1;	matrix[4][4] = 1;
+	}
+
+
+	//Faltung 3x3
+	if (eingabe == 1 || eingabe == 2 || eingabe == 3) {
+		for (x = 1; x < MAXXDIM - 1; x++) {
+			for (y = 1; y < MAXYDIM - 1; y++) {
+
+				out[x][y] = int((	matrix[0][0] * in[x - 1][y - 1] +	matrix[1][0] * in[x][y - 1] +	matrix[2][0] * in[x + 1][y - 1]
+								+	matrix[0][1] * in[x - 1][y] +		matrix[1][1] * in[x][y] +		matrix[2][1] * in[x + 1][y]
+								+	matrix[0][2] * in[x - 1][y + 1] +	matrix[1][2] * in[x][y + 1] +	matrix[2][2] * in[x + 1][y + 1]
+					) / (matrix[0][0] + matrix[1][0] + matrix[2][0] + matrix[0][1] + matrix[1][1] + matrix[2][1] + matrix[0][2] + matrix[1][2] + matrix[2][2]));
+			}
+		}
+	}
+	//Faltung 5x5
+	else if (eingabe == 4){
+		for (x = 2; x < MAXXDIM - 2; x++) {
+			for (y = 2; y < MAXYDIM - 2; y++) {
+
+				out[x][y] = int((	matrix[0][0] * in[x - 2][y - 2] +	matrix[1][0] * in[x - 1][y - 2] +	matrix[2][0] * in[x][y - 2] +	matrix[3][0] * in[x + 1][y - 2] +	matrix[4][0] * in[x + 2][y - 2]
+								+	matrix[0][1] * in[x - 2][y - 1] +	matrix[1][1] * in[x - 1][y - 1] +	matrix[2][1] * in[x][y - 1] +	matrix[3][1] * in[x + 1][y - 1] +	matrix[4][1] * in[x + 2][y - 1]
+								+	matrix[0][2] * in[x - 2][y]		+	matrix[1][2] * in[x - 1][y]		+	matrix[2][2] * in[x][y]		+	matrix[3][2] * in[x + 1][y]		+	matrix[4][2] * in[x + 2][y]
+								+	matrix[0][3] * in[x - 2][y + 1] +	matrix[1][3] * in[x - 1][y + 1] +	matrix[2][3] * in[x][y + 1] +	matrix[3][3] * in[x + 1][y + 1] +	matrix[4][3] * in[x + 2][y + 1]
+								+	matrix[0][4] * in[x - 2][y + 2] +	matrix[1][4] * in[x - 1][y + 2] +	matrix[2][4] * in[x][y + 2] +	matrix[3][4] * in[x + 1][y + 2] +	matrix[4][4] * in[x + 2][y + 2]) 
+							/	(	matrix[0][0] + matrix[1][0] + matrix[2][0] + matrix[3][0] + matrix[4][0] 
+								+	matrix[0][1] + matrix[1][1] + matrix[2][1] + matrix[3][1] + matrix[4][1] 
+								+	matrix[0][2] + matrix[1][2] + matrix[2][2] + matrix[3][2] + matrix[4][2]
+								+	matrix[0][3] + matrix[1][3] + matrix[2][3] + matrix[3][3] + matrix[4][3]
+								+	matrix[0][4] + matrix[1][4] + matrix[2][4] + matrix[3][4] + matrix[4][4]	));
+			}
+		}
+	}
+
+}
+
+
+
+void bubble_sort(int a[], int N) {
+	int i, j, t;
+	for (i = N-1; i >= 1; i--) {
+		for (j = 1; j <= i; j++) {
+			if (a[j - 1] > a[j]) {
+				t = a[j - 1];
+				a[j - 1] = a[j];
+				a[j] = t;
+
+			}
+		}
+	}
+}
+
+
+void Median(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+	int wert[25];
+	int eingabe;
+	printf("\n3x3\t1");
+	printf("\n5x5\t2\n");
+	scanf("%i", &eingabe);
 
 	//out-array nullen (schwarz stellen)
 	int x, y;
@@ -453,15 +552,34 @@ void Faltung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 		}
 	}
 
-	//an allen weißen Pixeln auf Elementarraute prüfen und ausgangsbit setzen
-	for (x = 1; x < MAXXDIM - 1; x++) {
-		for (y = 1; y < MAXYDIM - 1; y++) {
-			
-			out[x][y] = int( (	matrix[0][0] * in[x - 1][y - 1] + matrix[1][0] * in[x   ][y - 1] + matrix[2][0] * in[x + 1][y - 1]
-							+	matrix[0][1] * in[x - 1][y    ] + matrix[1][1] * in[x   ][y    ] + matrix[2][1] * in[x + 1][y    ]
-							+	matrix[0][2] * in[x - 1][y + 1] + matrix[1][2] * in[x   ][y + 1] + matrix[2][2] * in[x + 1][y + 1] 
-							 ) / (matrix[0][0] + matrix[1][0] + matrix[2][0] + matrix[0][1] + matrix[1][1] + matrix[2][1] + matrix[0][2] + matrix[1][2] + matrix[2][2]));
+	//Median 3x3
+	if (eingabe == 1) {
+		for (x = 1; x < MAXXDIM-1; x++) {
+			for (y = 1; y < MAXYDIM-1; y++) {
+				wert[0] = in[x - 1][y - 1];		wert[1] = in[x - 1][y];		wert[2] = in[x - 1][y + 1];
+				wert[3] = in[x][y - 1];			wert[4] = in[x][y];			wert[5] = in[x][y + 1];
+				wert[6] = in[x + 1][y - 1];		wert[7] = in[x + 1][y];		wert[8] = in[x + 1][y + 1];
 
+				bubble_sort(wert, 9);
+				out[x][y] = wert[4];
+			}
 		}
 	}
+
+	//median 5x5
+	if (eingabe == 2) {
+		for (x = 2; x < MAXXDIM-2; x++) {
+			for (y = 2; y < MAXYDIM-2; y++) {
+				wert[0] = in[x - 2][y - 2];		wert[1] = in[x - 2][y - 1];		wert[2] = in[x - 2][y];		wert[3] = in[x + 2][y + 1];		wert[4] = in[x + 2][y + 2];
+				wert[5] = in[x - 1][y - 2];		wert[6] = in[x - 1][y - 1];		wert[7] = in[x - 1][y];		wert[8] = in[x + 1][y + 1];		wert[9] = in[x + 1][y + 2];
+				wert[10] = in[x][y - 2];		wert[11] = in[x][y - 1];		wert[12] = in[x][y];		wert[13] = in[x][y + 1];		wert[14] = in[x][y + 2];
+				wert[15] = in[x + 1][y - 2];	wert[16] = in[x + 1][y - 1];	wert[17] = in[x + 1][y];	wert[18] = in[x - 1][y + 1];	wert[19] = in[x - 1][y + 2];
+				wert[20] = in[x + 2][y - 2];	wert[21] = in[x + 2][y - 1];	wert[22] = in[x + 2][y];	wert[23] = in[x - 2][y + 1];	wert[24] = in[x - 2][y + 2];
+
+				bubble_sort(wert, 25);
+				out[x][y] = wert[12];
+			}
+		}
+	}
+
 }
