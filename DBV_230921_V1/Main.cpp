@@ -81,17 +81,31 @@ void main() {
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
-		else if (choice == 13)		//Auswahl 12 ist Grauwert äqualisation
+		else if (choice == 13)		//Auswahl 13 ist Glätten durch Faltung
 		{
 			readImage_ppm(in);
 			Faltung(in, out);
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
-		else if (choice == 14)		//Auswahl 12 ist Grauwert äqualisation
+		else if (choice == 14)		//Auswahl 14 ist Glätten durch Medianbildung
 		{
 			readImage_ppm(in);
 			Median(in, out);
+			writeImage_ppm(out, 256, 256);
+			viewImage_ppm();
+		}
+		else if (choice == 15)		//Auswahl 15 ist Sobel Kantendetektion
+		{
+			readImage_ppm(in);
+			Sobel(in, out);
+			writeImage_ppm(out, 256, 256);
+			viewImage_ppm();
+		}
+		else if (choice == 16)		//Auswahl 16 ist Laplace Kantendetektion
+		{
+			readImage_ppm(in);
+			Laplace(in, out);
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
