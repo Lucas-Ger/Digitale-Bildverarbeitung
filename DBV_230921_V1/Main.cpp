@@ -110,7 +110,7 @@ void main() {
 			viewImage_ppm();
 		}
 		else if (choice == 17) {
-			test();
+	//		test();
 		}
 		else if (choice != 0)		//an sonsten falsche Eingabe: Gibt unteren Satz aus
 		{

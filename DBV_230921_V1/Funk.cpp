@@ -688,13 +688,13 @@ unsigned int binCoeff(int n, int k)
 		return fac(n) / (fac(n - k)*fac(k));
 }
 
-void test() {
+/*void test() {
 	int n, k, erg;
 	scanf("%i", &n);
 	scanf("%i", &k);
 	erg = binCoeff(n, k);
 	printf("%i", erg);
-}
+}*/
 void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	
 	int eingabe = 5;
@@ -702,13 +702,36 @@ void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]
 	scanf("%i", &eingabe);
 
 	//Matrix füllen
-	int x, y;
+	int i, j;
 	const int dim = 5;
 	//#define dim eingabe;
 	int matrix[dim][dim];
-	for (x = 0; x < dim; x++) {
-		for (y = 0; y < dim; y++) {
-			matrix[x][y] = binCoeff(dim-1, x) * binCoeff(dim-1, y);
+	for (i = 0; i < dim; i++) {
+		for (j = 0; j < dim; j++) {
+			matrix[i][j] = binCoeff(dim-1, i) * binCoeff(dim-1, j);
 		}
 	}
+
+	//Rand
+	int m = int(dim / 2 - 0.25);
+
+	//Faltung...
+	int x, y;
+	for (x = m; x < MAXXDIM - m; x++) {
+		for (y = m; y < MAXYDIM - m; y++) {
+
+			int value = 0;
+			//tatsächliche Faltung
+			for (i = 0; i < dim; i++) {
+				for (j = 0; j < dim; j++) {
+					int xi = x - m + i;
+					int yj = y - m + j;
+					value = value + (in[xi][yj] * matrix[i][j]);
+				}
+			}
+			out[x][y] = int(value / 20);//Normierung!!
+
+		}
+	}
+
 }
