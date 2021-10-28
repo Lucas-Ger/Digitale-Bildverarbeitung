@@ -31,3 +31,5 @@ extern void Median(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM
 extern void Sobel(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
 
 extern void Laplace(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
+
+extern void test();

@@ -668,3 +668,47 @@ void Laplace(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 	}
 
 }
+
+//DoG
+//Funktionen zur berechnung eines Binomialkoeffitienten
+int fac(int x)            // Compute n!
+{
+	if ((x == 0) || (x == 1))
+		return 1;
+	else
+		return (x*fac(x - 1));    // recusive call
+} // fac
+unsigned int binCoeff(int n, int k)
+{
+	if (k == 0 || k == n)
+		return 1;
+	else if (n == 0 || k > n)
+		return 0;
+	else
+		return fac(n) / (fac(n - k)*fac(k));
+}
+
+void test() {
+	int n, k, erg;
+	scanf("%i", &n);
+	scanf("%i", &k);
+	erg = binCoeff(n, k);
+	printf("%i", erg);
+}
+void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+	
+	int eingabe = 5;
+	printf("größe:");
+	scanf("%i", &eingabe);
+
+	//Matrix füllen
+	int x, y;
+	const int dim = 5;
+	//#define dim eingabe;
+	int matrix[dim][dim];
+	for (x = 0; x < dim; x++) {
+		for (y = 0; y < dim; y++) {
+			matrix[x][y] = binCoeff(dim-1, x) * binCoeff(dim-1, y);
+		}
+	}
+}
