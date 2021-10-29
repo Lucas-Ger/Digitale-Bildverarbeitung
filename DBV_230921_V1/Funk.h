@@ -32,4 +32,6 @@ extern void Sobel(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM]
 
 extern void Laplace(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
 
+extern void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
+
 extern void test();

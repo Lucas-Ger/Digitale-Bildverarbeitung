@@ -109,7 +109,14 @@ void main() {
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
-		else if (choice == 17) {
+		else if (choice == 17)		//Auswahl 16 ist Laplace Kantendetektion
+		{
+			readImage_ppm(in);
+			DoG(in, out);
+			writeImage_ppm(out, 256, 256);
+			viewImage_ppm();
+		}
+		else if (choice == 18) {
 	//		test();
 		}
 		else if (choice != 0)		//an sonsten falsche Eingabe: Gibt unteren Satz aus

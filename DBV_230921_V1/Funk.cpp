@@ -2,6 +2,7 @@
 #include <string.h>
 #include <conio.h>
 #include <math.h>
+#include<stdlib.h>
 #include "image-io.h"
 
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
@@ -24,6 +25,8 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-Median 14");
 	printf("\n-Sobel 15");
 	printf("\n-Laplace 16");
+	printf("\n-DoG 17");
+	printf("\n-Test 18");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
@@ -697,26 +700,81 @@ unsigned int binCoeff(int n, int k)
 }*/
 void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	
-	int eingabe = 5;
-	printf("größe:");
-	scanf("%i", &eingabe);
+	//out nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;			
+		}
+	}
+
+	int scale = 0;
+	printf("\n Scale vorgeben: (Nur gerade eingaben zulaessig)\n");
+	printf("Ihre Eingabe: ");
+
+	scanf("%i", &scale);
+
+	//Prüfen ob Eingabe Zahl gerade
+	//% = modulo
+	if ((scale % 2) == 1) {
+		printf("\nIhre Eingabe war ungerade.\n Es wird mit %i fortgefahren\n\n", scale-1);
+		scale = scale - 1;
+	}
+	if (scale < 2){
+		printf("\nIhre Eingabe war zu klein.\n Es wird mit %i fortgefahren\n\n", 2);
+		scale = 2;
+	}
+
 
 	//Matrix füllen
 	int i, j;
-	const int dim = 5;
+	//alter block mit Matrix [dim][dim]
+	const int dim = 7;
 	//#define dim eingabe;
 	int matrix[dim][dim];
+	
+
+	//const int dim = scale +1;
+	/*
+	if (scale == 2) {
+		int matrix[3][3];
+		int dim = scale + 1;
+	}
+	else if (scale == 4) {
+		int matrix[5][5];
+		int dim = scale + 1;
+	}
+	else if (scale == 6) {
+		int matrix[7][7];
+		int dim = scale + 1;
+	}
+	else if (scale == 8) {
+		int matrix[9][9];
+		int dim = scale + 1;
+		printf("Matrix[9][9]!\n");
+	}
+	else {
+		printf("\nFehler bei Matrixerstellung!\n\n");
+	}
+	*/
+		
+	
+	int vorfaktor = 0;
+	
 	for (i = 0; i < dim; i++) {
+		vorfaktor = vorfaktor + binCoeff(dim - 1, i);
 		for (j = 0; j < dim; j++) {
 			matrix[i][j] = binCoeff(dim-1, i) * binCoeff(dim-1, j);
 		}
 	}
+	//Umrechnung Vorfaktor
+	float f = (vorfaktor)*(vorfaktor);
 
 	//Rand
-	int m = int(dim / 2 - 0.25);
+	int m = int(dim / 2 - 0.5);
 
 	//Faltung...
-	int x, y;
+	//int x, y;
 	for (x = m; x < MAXXDIM - m; x++) {
 		for (y = m; y < MAXYDIM - m; y++) {
 
@@ -729,7 +787,7 @@ void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]
 					value = value + (in[xi][yj] * matrix[i][j]);
 				}
 			}
-			out[x][y] = int(value / 20);//Normierung!!
+			out[x][y] = int(value /f);//Normierung!!
 
 		}
 	}
