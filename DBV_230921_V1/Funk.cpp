@@ -26,7 +26,6 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-Sobel 15");
 	printf("\n-Laplace 16");
 	printf("\n-DoG 17");
-	printf("\n-Test 18");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
@@ -690,106 +689,77 @@ unsigned int binCoeff(int n, int k)
 	else
 		return fac(n) / (fac(n - k)*fac(k));
 }
-
-/*void test() {
-	int n, k, erg;
-	scanf("%i", &n);
-	scanf("%i", &k);
-	erg = binCoeff(n, k);
-	printf("%i", erg);
-}*/
+//Funktion
 void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
-	
+
+	float temp[2][MAXXDIM][MAXYDIM];
+
 	//out nullen (schwarz stellen)
 	int x, y;
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
-			out[x][y] = 0;			
+			out[x][y] = 0;
+			temp[0][x][y] = 0;
+			temp[1][x][y] = 0;
 		}
 	}
 
-	int scale = 0;
-	printf("\n Scale vorgeben: (Nur gerade eingaben zulaessig)\n");
-	printf("Ihre Eingabe: ");
+	//2 Mal Gaussmatrix anwenden
+	for (int a = 0; a < 2; a++){
 
-	scanf("%i", &scale);
-
-	//Prüfen ob Eingabe Zahl gerade
-	//% = modulo
-	if ((scale % 2) == 1) {
-		printf("\nIhre Eingabe war ungerade.\n Es wird mit %i fortgefahren\n\n", scale-1);
-		scale = scale - 1;
-	}
-	if (scale < 2){
-		printf("\nIhre Eingabe war zu klein.\n Es wird mit %i fortgefahren\n\n", 2);
-		scale = 2;
-	}
-
-
-	//Matrix füllen
-	int i, j;
-	//alter block mit Matrix [dim][dim]
-	const int dim = 7;
-	//#define dim eingabe;
-	int matrix[dim][dim];
-	
-
-	//const int dim = scale +1;
-	/*
-	if (scale == 2) {
-		int matrix[3][3];
-		int dim = scale + 1;
-	}
-	else if (scale == 4) {
-		int matrix[5][5];
-		int dim = scale + 1;
-	}
-	else if (scale == 6) {
-		int matrix[7][7];
-		int dim = scale + 1;
-	}
-	else if (scale == 8) {
+		//Gaussmatrix Initialisieren
+		int dim = 0;
+		//größe der Gaussmatritzen definieren
+		if(a == 0) dim = 7;
+		else if (a == 1) dim = 9;
 		int matrix[9][9];
-		int dim = scale + 1;
-		printf("Matrix[9][9]!\n");
-	}
-	else {
-		printf("\nFehler bei Matrixerstellung!\n\n");
-	}
-	*/
-		
-	
-	int vorfaktor = 0;
-	
-	for (i = 0; i < dim; i++) {
-		vorfaktor = vorfaktor + binCoeff(dim - 1, i);
-		for (j = 0; j < dim; j++) {
-			matrix[i][j] = binCoeff(dim-1, i) * binCoeff(dim-1, j);
-		}
-	}
-	//Umrechnung Vorfaktor
-	float f = (vorfaktor)*(vorfaktor);
 
-	//Rand
-	int m = int(dim / 2 - 0.5);
+		//Quersumme berechnen
+		int cksum = 0;
 
-	//Faltung...
-	//int x, y;
-	for (x = m; x < MAXXDIM - m; x++) {
-		for (y = m; y < MAXYDIM - m; y++) {
-
-			int value = 0;
-			//tatsächliche Faltung
-			for (i = 0; i < dim; i++) {
-				for (j = 0; j < dim; j++) {
-					int xi = x - m + i;
-					int yj = y - m + j;
-					value = value + (in[xi][yj] * matrix[i][j]);
-				}
+		//Matrix füllen mit Pascallschem Dreieck (Binomialkoeffitienten)
+		int i, j;
+		for (i = 0; i < dim; i++) {
+			cksum = cksum + binCoeff(dim - 1, i);
+			for (j = 0; j < dim; j++) {
+				matrix[i][j] = binCoeff(dim - 1, i) * binCoeff(dim - 1, j);
 			}
-			out[x][y] = int(value /f);//Normierung!!
+		}
+		//Umrechnung Quersumme in Normierungsfaktor
+		float f = (cksum)*(cksum);
 
+		//Berechnung vom Rand m
+		int m = int(dim / 2 - 0.5);
+
+		//Faltung mit Gaussmatrix
+		for (x = m; x < MAXXDIM - m; x++) {
+			for (y = m; y < MAXYDIM - m; y++) {
+
+				int value = 0;
+				//Faltungsmatrix eintrag für eintrag durchgehen
+				for (i = 0; i < dim; i++) {
+					for (j = 0; j < dim; j++) {
+						//xi und yj sind die in aktuell betrachteten Pixel
+						int xi = x - m + i;
+						int yj = y - m + j;
+						//Einzelne Werte mit ihren gewichtungen aufmultiplizieren
+						value = value + (in[xi][yj] * matrix[i][j]);
+					}
+				}
+				//Im Ausgabepixel Faltungssumme / Normierung schreiben
+				temp[a][x][y] = value / f;
+				//fortführung mit nächstem Ausgabepixel
+			}
+		}
+
+	}//2x Faltung mit Gauss fertig. Temp[0] = 7x7, Temp[1] = 9x9
+
+	//7x7 von 9x9 Matrix abziehen
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = int( temp[1][x][y] - temp[0][x][y]);
 		}
 	}
+
 
 }
