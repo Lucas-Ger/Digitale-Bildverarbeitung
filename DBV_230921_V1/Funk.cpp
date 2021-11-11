@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <conio.h>
+#include <math.h>
+#include<stdlib.h>
 #include "image-io.h"
 
 int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm aus
@@ -21,6 +23,9 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-Grauwert aequalisation 12");
 	printf("\n-Faltung 13");
 	printf("\n-Median 14");
+	printf("\n-Sobel 15");
+	printf("\n-Laplace 16");
+	printf("\n-DoG 17");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
@@ -108,7 +113,6 @@ int pixelcount_return(unsigned char in[MAXXDIM][MAXYDIM])
 	return counter;
 }
 
-
 //Funktion öffnen - eingegebene Anzahl erst erodieren, dann dilatieren
 void oeffnen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM])
 {
@@ -165,7 +169,6 @@ void oeffnen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 	}
 }
 
-
 //Funktion schließen - eingegebene Anzahl erst dilatieren, dann erodieren
 void schliessen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM])
 {
@@ -221,7 +224,6 @@ void schliessen(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 		erode(temp1, out);
 	}
 }
-
 
 //Funktion grassfire algorythmus
 void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
@@ -298,8 +300,7 @@ void grassfire(unsigned char in[MAXXDIM][MAXYDIM]) {
 
 }//ende fkt
 
-
-
+//Funktion Histogrammerstellung
 void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 
 	unsigned int grauwertzahl[256];
@@ -335,7 +336,7 @@ void histogramm(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 	}
 }
 
-
+//Funktion Grauwertdehnung
 void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	//Variablendeklaration
 	int x, y;
@@ -378,6 +379,7 @@ void GW_dehnung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][M
 	}
 }
 
+//Funktion Grauwertäqualisation
 void GW_aequalisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	//Variablendeklaration
 	int x, y;
@@ -442,8 +444,7 @@ void GW_aequalisation(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXX
 
 }//end of function
 
-
-
+//Funktion Falten (Glättung) mit verschiedenen 3x3 und 5x5 Matritzen
 void Faltung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 
 	int matrix [5][5];
@@ -520,8 +521,7 @@ void Faltung(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 
 }
 
-
-
+//Funktion bubble sort von array a[] mit Anzahl N (für Medianbildung)
 void bubble_sort(int a[], int N) {
 	int i, j, t;
 	for (i = N-1; i >= 1; i--) {
@@ -536,7 +536,7 @@ void bubble_sort(int a[], int N) {
 	}
 }
 
-
+//Median-Glättung
 void Median(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	int wert[25];
 	int eingabe;
@@ -581,5 +581,185 @@ void Median(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYD
 			}
 		}
 	}
+
+}
+
+//Sobel Kantendetektion | nicht binarisiert
+void Sobel(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+	int temp[2][MAXXDIM][MAXYDIM];
+	int matrix[3][3];
+
+	//out und temp-arrays nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+			temp[0][x][y] = 0;
+			temp[1][x][y] = 0;
+		}
+	}
+
+	//x = 0, Y = 1 durchgehen
+	for (int i = 0; i <= 1; i++) {
+		//Matritzen setzen
+		if (i == 0) {//X-Matrix Setzen
+			matrix[0][0] = 1;	matrix[1][0] = 0;	matrix[2][0] = -1;
+			matrix[0][1] = 2;	matrix[1][1] = 0;	matrix[2][1] = -2;
+			matrix[0][2] = 1;	matrix[1][2] = 0;	matrix[2][2] = -1;
+		}
+		else if (i == 1) {//Y Matrix setzen
+			matrix[0][0] = 1;	matrix[1][0] = 2;	matrix[2][0] = 1;
+			matrix[0][1] = 0;	matrix[1][1] = 0;	matrix[2][1] = 0;
+			matrix[0][2] = -1;	matrix[1][2] = -2;	matrix[2][2] = -1;
+		}
+
+
+		//Faltung 3x3
+
+		for (x = 1; x < MAXXDIM - 1; x++) {
+			for (y = 1; y < MAXYDIM - 1; y++) {
+
+				temp[i][x][y] = int(	matrix[0][0] * in[x - 1][y - 1]	+	matrix[1][0] * in[x][y - 1] +	 matrix[2][0] * in[x + 1][y - 1]
+									+	matrix[0][1] * in[x - 1][y]		+	matrix[1][1] * in[x][y]		+	 matrix[2][1] * in[x + 1][y]
+									+	matrix[0][2] * in[x - 1][y + 1] +	matrix[1][2] * in[x][y + 1] +	 matrix[2][2] * in[x + 1][y + 1]
+									);
+			}
+		}
+
+	}
+
+	for (x = 1; x < MAXXDIM - 1; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+			out[x][y] = unsigned char ( sqrt((temp[0][x][y] * temp[0][x][y]) + (temp[1][x][y] * temp[1][x][y])));
+		}
+	}
+
+}
+
+//Laplace (4er Bereich) Kantendetektion | nicht binarisiert
+void Laplace(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+	int matrix[3][3];
+
+	//out-array nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+		}
+	}
+
+	//Matritzen setzen
+	if (true) {
+		matrix[0][0] = 0;	matrix[1][0] = 1;	matrix[2][0] = 0;
+		matrix[0][1] = 1;	matrix[1][1] = -4;	matrix[2][1] = 1;
+		matrix[0][2] = 0;	matrix[1][2] = 1;	matrix[2][2] = 0;
+	}
+
+
+
+//Faltung 3x3
+
+	for (x = 1; x < MAXXDIM - 1; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+
+			out[x][y] = 127 + int(	matrix[0][0] * in[x - 1][y - 1] + matrix[1][0] * in[x][y - 1]	+ matrix[2][0] * in[x + 1][y - 1]
+								+	matrix[0][1] * in[x - 1][y]		+ matrix[1][1] * in[x][y]		+ matrix[2][1] * in[x + 1][y]
+								+	matrix[0][2] * in[x - 1][y + 1] + matrix[1][2] * in[x][y + 1]	+ matrix[2][2] * in[x + 1][y + 1]
+								);
+		}
+	}
+
+}
+
+//DoG
+//Funktionen zur berechnung eines Binomialkoeffitienten
+int fac(int x)            // Compute n!
+{
+	if ((x == 0) || (x == 1))
+		return 1;
+	else
+		return (x*fac(x - 1));    // recusive call
+} // fac
+unsigned int binCoeff(int n, int k)
+{
+	if (k == 0 || k == n)
+		return 1;
+	else if (n == 0 || k > n)
+		return 0;
+	else
+		return fac(n) / (fac(n - k)*fac(k));
+}
+//Funktion
+void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+
+	float temp[2][MAXXDIM][MAXYDIM];
+
+	//out nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+			temp[0][x][y] = 0;
+			temp[1][x][y] = 0;
+		}
+	}
+
+	//2 Mal Gaussmatrix anwenden
+	for (int a = 0; a < 2; a++){
+
+		//Gaussmatrix Initialisieren
+		int dim = 0;
+		//größe der Gaussmatritzen definieren
+		if(a == 0) dim = 7;
+		else if (a == 1) dim = 9;
+		int matrix[9][9];
+
+		//Quersumme berechnen
+		int cksum = 0;
+
+		//Matrix füllen mit Pascallschem Dreieck (Binomialkoeffitienten)
+		int i, j;
+		for (i = 0; i < dim; i++) {
+			cksum = cksum + binCoeff(dim - 1, i);
+			for (j = 0; j < dim; j++) {
+				matrix[i][j] = binCoeff(dim - 1, i) * binCoeff(dim - 1, j);
+			}
+		}
+		//Umrechnung Quersumme in Normierungsfaktor
+		float f = (cksum)*(cksum);
+
+		//Berechnung vom Rand m
+		int m = int(dim / 2 - 0.5);
+
+		//Faltung mit Gaussmatrix
+		for (x = m; x < MAXXDIM - m; x++) {
+			for (y = m; y < MAXYDIM - m; y++) {
+
+				int value = 0;
+				//Faltungsmatrix eintrag für eintrag durchgehen
+				for (i = 0; i < dim; i++) {
+					for (j = 0; j < dim; j++) {
+						//xi und yj sind die in aktuell betrachteten Pixel
+						int xi = x - m + i;
+						int yj = y - m + j;
+						//Einzelne Werte mit ihren gewichtungen aufmultiplizieren
+						value = value + (in[xi][yj] * matrix[i][j]);
+					}
+				}
+				//Im Ausgabepixel Faltungssumme / Normierung schreiben
+				temp[a][x][y] = value / f;
+				//fortführung mit nächstem Ausgabepixel
+			}
+		}
+
+	}//2x Faltung mit Gauss fertig. Temp[0] = 7x7, Temp[1] = 9x9
+
+	//7x7 von 9x9 Matrix abziehen
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = int( temp[1][x][y] - temp[0][x][y]);
+		}
+	}
+
 
 }
