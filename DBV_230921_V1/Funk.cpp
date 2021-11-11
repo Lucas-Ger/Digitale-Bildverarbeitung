@@ -27,6 +27,7 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-Laplace 16");
 	printf("\n-DoG 17");
 	printf("\n-Laws 18");
+	printf("\n-Coocurrence 18");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
@@ -896,7 +897,7 @@ void Laws(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM
 	//maximale Grauwertzahl suchen
 	float maxgrauwertzahl = 0;
 	for (x = 0; x <= MAXXDIM; x++) {
-		for (y = 1; y < MAXYDIM - 1; y++) {
+		for (y = 0; y < MAXYDIM; y++) {
 			if (temp[x][y] > maxgrauwertzahl) {
 				maxgrauwertzahl = temp[x][y];
 			}
@@ -909,5 +910,85 @@ void Laws(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM
 		}
 	}
 
+
+}
+
+
+void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+
+	unsigned char matrix[5][MAXXDIM][MAXYDIM];
+
+
+	//out-array auf 255 andere nullen
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 255;
+			//0°
+			matrix[0][x][y] = 0;
+			//45°
+			matrix[1][x][y] = 0;
+			//90°
+			matrix[2][x][y] = 0;
+			//135°
+			matrix[3][x][y] = 0;
+			//135°
+			matrix[4][x][y] = 0;
+		}
+	}
+
+
+	//Nachbargrauwerte aufnehmen
+	for (x = 1; x <= MAXXDIM-1; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+			//0°
+			matrix[0][x][y] = in[x + 1][y];
+			//45°
+			matrix[1][x][y] = in[x + 1][y - 1];
+			//90°
+			matrix[2][x][y] = in[x][y - 1];
+			//135°
+			matrix[3][x][y] = in[x - 1][y-1];
+		}
+	}
+
+
+	//Nachbargrauwert mitteln
+	for (x = 1; x <= MAXXDIM - 1; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+			
+			matrix[4][x][y] = int(sqrt(matrix[0][x][y] * matrix[0][x][y] + matrix[1][x][y] * matrix[1][x][y] + matrix[2][x][y] * matrix[2][x][y] + matrix[3][x][y] * matrix[3][x][y]));
+		}
+	}
+
+	//Ausgeben
+	for (x = 1; x <= MAXXDIM - 1; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+
+			out[(in[x][y])][matrix[4][x][y]] = out[(in[x][y])][matrix[4][x][y]] - 1;
+			out[matrix[4][x][y]][(in[x][y])] = out[matrix[4][x][y]][(in[x][y])] - 1;
+		}
+	}
+
+	//Ausgabe an sich fertig
+
+
+	//Minimalen Grauwert ermitteln
+	unsigned char mingrauwertzahl = 255;
+	for (x = 0; x <= MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			if (out[x][y] < mingrauwertzahl) {
+				mingrauwertzahl = out[x][y];
+			}
+		}
+	}
+	//auf minimalen Grauwert skalieren
+	for (x = 0; x <= MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			if (out[x][y] != 255) {
+				out[x][y] = int((out[x][y] - mingrauwertzahl) * 255 / (1 - mingrauwertzahl));
+			}
+		}
+	}
 
 }

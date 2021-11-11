@@ -123,6 +123,13 @@ void main() {
 		writeImage_ppm(out, 256, 256);
 		viewImage_ppm();
 		}
+		else if (choice == 19)		//Auswahl 16 ist Laplace Kantendetektion
+		{
+		readImage_ppm(in);
+		Coocurrence(in, out);
+		writeImage_ppm(out, 256, 256);
+		viewImage_ppm();
+		}
 		else if (choice != 0)		//an sonsten falsche Eingabe: Gibt unteren Satz aus
 		{
 			printf("Bitte ueberpruefen sie ihre Eingabe !\n---- - \n");
