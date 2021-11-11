@@ -26,6 +26,7 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-Sobel 15");
 	printf("\n-Laplace 16");
 	printf("\n-DoG 17");
+	printf("\n-Laws 18");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
@@ -711,7 +712,8 @@ void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]
 		int dim = 0;
 		//größe der Gaussmatritzen definieren
 		if(a == 0) dim = 7;
-		else if (a == 1) dim = 9;
+		else if (a == 1) dim = 9
+;
 		int matrix[9][9];
 
 		//Quersumme berechnen
@@ -758,6 +760,152 @@ void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
 			out[x][y] = int( temp[1][x][y] - temp[0][x][y]);
+		}
+	}
+
+
+}
+
+//
+void Laws(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+
+	int matrix[9][5][5];
+	float erg[9];
+	float temp[MAXXDIM][MAXYDIM];
+	
+	int eingabe;
+
+	printf("\n 3x3:\t1");
+	printf("\n 5x5:\t2\n");
+	scanf("%i", &eingabe);
+	
+	//out-array nullen (schwarz stellen)
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 0;
+		}
+	}
+
+	//Matritzen setzen
+	if (eingabe == 1) {
+		int i = 0;
+		matrix[i][0][0] = 1;	matrix[i][1][0] = 2;	matrix[i][2][0] = 1;
+		matrix[i][0][1] = 2;	matrix[i][1][1] = 4;	matrix[i][2][1] = 2;
+		matrix[i][0][2] = 1;	matrix[i][1][2] = 2;	matrix[i][2][2] = 1;
+		i = 1;
+		matrix[i][0][0] = -1;	matrix[i][1][0] = 0;	matrix[i][2][0] = 1;
+		matrix[i][0][1] = -2;	matrix[i][1][1] = 0;	matrix[i][2][1] = 2;
+		matrix[i][0][2] = -1;	matrix[i][1][2] = 0;	matrix[i][2][2] = 1;
+		i = 2;
+		matrix[i][0][0] = -1;	matrix[i][1][0] = 2;	matrix[i][2][0] = -1;
+		matrix[i][0][1] = -2;	matrix[i][1][1] = 4;	matrix[i][2][1] = -2;
+		matrix[i][0][2] = -1;	matrix[i][1][2] = 2;	matrix[i][2][2] = -1;
+		i = 3;
+		matrix[i][0][0] = -1;	matrix[i][1][0] = -2;	matrix[i][2][0] = -1;
+		matrix[i][0][1] = 0;	matrix[i][1][1] = 0;	matrix[i][2][1] = 0;
+		matrix[i][0][2] = 1;	matrix[i][1][2] = 2;	matrix[i][2][2] = 1;
+		i = 4;
+		matrix[i][0][0] = 1;	matrix[i][1][0] = 0;	matrix[i][2][0] = -1;
+		matrix[i][0][1] = 0;	matrix[i][1][1] = 0;	matrix[i][2][1] = 0;
+		matrix[i][0][2] = -1;	matrix[i][1][2] = 0;	matrix[i][2][2] = 1;
+		i = 5;
+		matrix[i][0][0] = 1;	matrix[i][1][0] = -2;	matrix[i][2][0] = 1;
+		matrix[i][0][1] = 0;	matrix[i][1][1] = 0;	matrix[i][2][1] = 0;
+		matrix[i][0][2] = -1;	matrix[i][1][2] = 2;	matrix[i][2][2] = -1;
+		i = 6;
+		matrix[i][0][0] = -1;	matrix[i][1][0] = -2;	matrix[i][2][0] = -1;
+		matrix[i][0][1] = 2;	matrix[i][1][1] = 4;	matrix[i][2][1] = 2;
+		matrix[i][0][2] = -1;	matrix[i][1][2] = -2;	matrix[i][2][2] = -1;
+		i = 7;
+		matrix[i][0][0] = 1;	matrix[i][1][0] = 0;	matrix[i][2][0] = -1;
+		matrix[i][0][1] = -2;	matrix[i][1][1] = 0;	matrix[i][2][1] = 2;
+		matrix[i][0][2] = 1;	matrix[i][1][2] = 0;	matrix[i][2][2] = -1;
+		i = 8;
+		matrix[i][0][0] = 1;	matrix[i][1][0] = -2;	matrix[i][2][0] = 1;
+		matrix[i][0][1] = -2;	matrix[i][1][1] = 4;	matrix[i][2][1] = -2;
+		matrix[i][0][2] = 1;	matrix[i][1][2] = -2;	matrix[i][2][2] = 1;
+	}
+	else if (eingabe == 2) {
+		int i = 0;
+		matrix[i][0][0] = -1;	matrix[i][1][0] = -2;	matrix[i][2][0] = 0;	matrix[i][3][0] = 2;	matrix[i][4][0] = 1;
+		matrix[i][0][1] = -4;	matrix[i][1][1] = -8;	matrix[i][2][1] = 0;	matrix[i][3][1] = 8;	matrix[i][4][1] = 4;
+		matrix[i][0][2] = -6;	matrix[i][1][2] = -12;	matrix[i][2][2] = 0;	matrix[i][3][2] = 12;	matrix[i][4][2] = 6;
+		matrix[i][0][3] = -4;	matrix[i][1][3] = -8;	matrix[i][2][3] = 0;	matrix[i][3][3] = 8;	matrix[i][4][3] = 4;
+		matrix[i][0][4] = -1;	matrix[i][1][4] = -2;	matrix[i][2][4] = 0;	matrix[i][3][4] = 2;	matrix[i][4][4] = 1;
+		i = 1;
+		matrix[i][0][0] = -1;	matrix[i][1][0] = 0;	matrix[i][2][0] = 2;	matrix[i][3][0] = 0;	matrix[i][4][0] = -1;
+		matrix[i][0][1] = -2;	matrix[i][1][1] = 0;	matrix[i][2][1] = 4;	matrix[i][3][1] = 0;	matrix[i][4][1] = -2;
+		matrix[i][0][2] = 0;	matrix[i][1][2] = 0;	matrix[i][2][2] = 0;	matrix[i][3][2] = 0;	matrix[i][4][2] = 0;
+		matrix[i][0][3] = 2;	matrix[i][1][3] = 0;	matrix[i][2][3] = -4;	matrix[i][3][3] = 0;	matrix[i][4][3] = 2;
+		matrix[i][0][4] = 1;	matrix[i][1][4] = 0;	matrix[i][2][4] = -2;	matrix[i][3][4] = 0;	matrix[i][4][4] = 1;
+		i = 2;
+		matrix[i][0][0] = -1;	matrix[i][1][0] = 0;	matrix[i][2][0] = 2;	matrix[i][3][0] = 0;	matrix[i][4][0] = -1;
+		matrix[i][0][1] = -4;	matrix[i][1][1] = 0;	matrix[i][2][1] = 8;	matrix[i][3][1] = 0;	matrix[i][4][1] = -4;
+		matrix[i][0][2] = -6;	matrix[i][1][2] = 0;	matrix[i][2][2] = 12;	matrix[i][3][2] = 0;	matrix[i][4][2] = -6;
+		matrix[i][0][3] = -4;	matrix[i][1][3] = 0;	matrix[i][2][3] = 8;	matrix[i][3][3] = 0;	matrix[i][4][3] = -4;
+		matrix[i][0][4] = -1;	matrix[i][1][4] = 0;	matrix[i][2][4] = 2;	matrix[i][3][4] = 0;	matrix[i][4][4] = -1;
+		i = 3;
+		matrix[i][0][0] = 1;	matrix[i][1][0] = -4;	matrix[i][2][0] = 6;	matrix[i][3][0] = -4;	matrix[i][4][0] = 1;
+		matrix[i][0][1] = -4;	matrix[i][1][1] = 16;	matrix[i][2][1] = -24;	matrix[i][3][1] = 16;	matrix[i][4][1] = -4;
+		matrix[i][0][2] = 6;	matrix[i][1][2] = -24;	matrix[i][2][2] = 36;	matrix[i][3][2] = -24;	matrix[i][4][2] = 6;
+		matrix[i][0][3] = -4;	matrix[i][1][3] = 16;	matrix[i][2][3] = -24;	matrix[i][3][3] = 16;	matrix[i][4][3] = -4;
+		matrix[i][0][4] = 1;	matrix[i][1][4] = -4;	matrix[i][2][4] = 6;	matrix[i][3][4] = -4;	matrix[i][4][4] = 1;
+		
+	}
+
+	//Faltung 3x3
+	if (eingabe == 1) {
+		for (x = 1; x < MAXXDIM - 1; x++) {
+			for (y = 1; y < MAXYDIM - 1; y++) {
+				for (int i = 0; i < 9; i++) {
+					erg[i] = matrix[i][0][0] * in[x - 1][y - 1] + matrix[i][1][0] * in[x][y - 1] + matrix[i][2][0] * in[x + 1][y - 1]
+						+ matrix[i][0][1] * in[x - 1][y] + matrix[i][1][1] * in[x][y] + matrix[i][2][1] * in[x + 1][y]
+						+ matrix[i][0][2] * in[x - 1][y + 1] + matrix[i][1][2] * in[x][y + 1] + matrix[i][2][2] * in[x + 1][y + 1];
+					if (i == 0) erg[i] = erg[i] / 16;
+				}
+
+				temp[x][y] = sqrt(/*erg[0] * erg[0] +*/ erg[1] * erg[1] + erg[2] * erg[2] + erg[3] * erg[3] + erg[4] * erg[4] + erg[5] * erg[5] + erg[6] * erg[6] + erg[7] * erg[7] + erg[8] * erg[8]);
+
+			}
+		}
+	}
+
+	//Faltung 5x5
+	else if (eingabe == 2) {
+		for (x = 2; x < MAXXDIM - 2; x++) {
+			for (y = 2; y < MAXYDIM - 2; y++) {
+				for (int i = 0; i < 9; i++) {
+					erg[i] = matrix[i][0][0] * in[x - 2][y - 2] + matrix[i][1][0] * in[x - 1][y - 2] + matrix[i][2][0] * in[x][y - 2] + matrix[i][3][0] * in[x + 1][y - 2] + matrix[i][4][0] * in[x + 2][y - 2]
+						+ matrix[i][0][1] * in[x - 2][y - 1] + matrix[i][1][1] * in[x - 1][y - 1] + matrix[i][2][1] * in[x][y - 1] + matrix[i][3][1] * in[x + 1][y - 1] + matrix[i][4][1] * in[x + 2][y - 1]
+						+ matrix[i][0][2] * in[x - 2][y] + matrix[i][1][2] * in[x - 1][y] + matrix[i][2][2] * in[x][y] + matrix[i][3][2] * in[x + 1][y] + matrix[i][4][2] * in[x + 2][y]
+						+ matrix[i][0][3] * in[x - 2][y + 1] + matrix[i][1][3] * in[x - 1][y + 1] + matrix[i][2][3] * in[x][y + 1] + matrix[i][3][3] * in[x + 1][y + 1] + matrix[i][4][3] * in[x + 2][y + 1]
+						+ matrix[i][0][4] * in[x - 2][y + 2] + matrix[i][1][4] * in[x - 1][y + 2] + matrix[i][2][4] * in[x][y + 2] + matrix[i][3][4] * in[x + 1][y + 2] + matrix[i][4][4] * in[x + 2][y + 2];
+				}
+
+				temp[x][y] = sqrt(erg[0] * erg[0] + erg[1] * erg[1] + erg[2] * erg[2] + erg[3] * erg[3]);
+			}
+		}
+	}
+
+
+
+
+
+
+	//maximale Grauwertzahl suchen
+	float maxgrauwertzahl = 0;
+	for (x = 0; x <= MAXXDIM; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+			if (temp[x][y] > maxgrauwertzahl) {
+				maxgrauwertzahl = temp[x][y];
+			}
+		}
+	}
+
+	for (x = 0; x <= MAXXDIM; x++) {
+		for (y = 1; y < MAXYDIM - 1; y++) {
+			out[x][y] = int(temp[x][y] / maxgrauwertzahl * 255);
 		}
 	}
 

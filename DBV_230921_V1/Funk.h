@@ -35,3 +35,5 @@ extern void Laplace(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDI
 extern void DoG(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
 
 extern void test();
+
+extern void Laws(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
