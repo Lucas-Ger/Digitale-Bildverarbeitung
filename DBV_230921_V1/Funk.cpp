@@ -27,7 +27,7 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-Laplace 16");
 	printf("\n-DoG 17");
 	printf("\n-Laws 18");
-	printf("\n-Coocurrence 18");
+	printf("\n-Coocurrence 19");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
