@@ -27,7 +27,7 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-Laplace 16");
 	printf("\n-DoG 17");
 	printf("\n-Laws 18");
-	printf("\n-Coocurrence 18");
+	printf("\n-Coocurrence 19");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
@@ -917,9 +917,10 @@ void Laws(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM
 void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 
 	unsigned char matrix[5][MAXXDIM][MAXYDIM];
+	unsigned char gw, gw0, gw45, gw90, gw135;
 
 
-	//out-array auf 255 andere nullen
+	//out-array auf 255, andere nullen
 	int x, y;
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
@@ -932,46 +933,83 @@ void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][
 			matrix[2][x][y] = 0;
 			//135°
 			matrix[3][x][y] = 0;
-			//135°
+			//
 			matrix[4][x][y] = 0;
 		}
 	}
 
 
-	//Nachbargrauwerte aufnehmen
-	for (x = 1; x <= MAXXDIM-1; x++) {
+	//Coocurrencematrix für die 4 Richtungen aufnehmen
+	for (x = 1; x < MAXXDIM - 1; x++) {
 		for (y = 1; y < MAXYDIM - 1; y++) {
+			gw = in[x][y];
+			gw0 = in[x + 1][y];
+			gw45 = in[x + 1][y - 1];
+			gw90 = in[x][y - 1];
+			gw135 = in[x - 1][y - 1];
+
+
 			//0°
-			matrix[0][x][y] = in[x + 1][y];
+			matrix[0][gw][gw0] = matrix[0][gw][gw0] + 1;
 			//45°
-			matrix[1][x][y] = in[x + 1][y - 1];
+			matrix[1][gw][gw45] = matrix[1][gw][gw45] + 1;
 			//90°
-			matrix[2][x][y] = in[x][y - 1];
+			matrix[2][gw][gw90] = matrix[2][gw][gw90] + 1;
 			//135°
-			matrix[3][x][y] = in[x - 1][y-1];
+			matrix[3][gw][gw135] = matrix[3][gw][gw135] + 1;
+			
 		}
 	}
 
 
 	//Nachbargrauwert mitteln
-	for (x = 1; x <= MAXXDIM - 1; x++) {
-		for (y = 1; y < MAXYDIM - 1; y++) {
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
 			
-			matrix[4][x][y] = int(sqrt(matrix[0][x][y] * matrix[0][x][y] + matrix[1][x][y] * matrix[1][x][y] + matrix[2][x][y] * matrix[2][x][y] + matrix[3][x][y] * matrix[3][x][y]));
+			matrix[4][x][y] = int((matrix[0][x][y] + matrix[1][x][y] + matrix[2][x][y] + matrix[3][x][y]) / 4);
+			
 		}
 	}
 
 	//Ausgeben
-	for (x = 1; x <= MAXXDIM - 1; x++) {
-		for (y = 1; y < MAXYDIM - 1; y++) {
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
 
-			out[(in[x][y])][matrix[4][x][y]] = out[(in[x][y])][matrix[4][x][y]] - 1;
-			out[matrix[4][x][y]][(in[x][y])] = out[matrix[4][x][y]][(in[x][y])] - 1;
+			out[x][y] = 255 - matrix[4][x][y];
+			
+		}
+	}
+	
+	//Kontrastberechnung
+	//zunächst normieren
+	int s = 0;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			s = s + matrix[4][x][y];
+		}
+	}
+	float normmatrix[MAXXDIM][MAXYDIM];
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			normmatrix[x][y] = float(matrix[4][x][y]) / float(s);
 		}
 	}
 
-	//Ausgabe an sich fertig
+	//Kontrast berechnen
+	float kontrast = 0;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
 
+			kontrast = kontrast + (x - y)*(x - y) * normmatrix[x][y];
+		}
+	}
+
+	printf("\nKontrast: %f\n\n", kontrast);
+
+
+	//Ausgabe an sich fertig
+	//Skalierung der Ausgabe
+/*
 
 	//Minimalen Grauwert ermitteln
 	unsigned char mingrauwertzahl = 255;
@@ -990,5 +1028,5 @@ void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][
 			}
 		}
 	}
-
+*/
 }
