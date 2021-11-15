@@ -109,21 +109,21 @@ void main() {
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
-		else if (choice == 17)		//Auswahl 16 ist DoG Kantendetektion
+		else if (choice == 17)		//Auswahl 17 ist DoG Kantendetektion
 		{
 			readImage_ppm(in);
 			DoG(in, out);
 			writeImage_ppm(out, 256, 256);
 			viewImage_ppm();
 		}
-		else if (choice == 18)		//Auswahl 16 ist Laws
+		else if (choice == 18)		//Auswahl 18 ist Laws
 		{
 		readImage_ppm(in);
 		Laws(in, out);
 		writeImage_ppm(out, 256, 256);
 		viewImage_ppm();
 		}
-		else if (choice == 19)		//Auswahl 16 ist Coocurrence
+		else if (choice == 19)		//Auswahl 19 ist Coocurrence
 		{
 		readImage_ppm(in);
 		Coocurrence(in, out);
