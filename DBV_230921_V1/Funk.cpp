@@ -914,7 +914,7 @@ void Laws(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM
 }
 
 
-void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]){
 
 	unsigned char matrix[5][MAXXDIM][MAXYDIM];
 	unsigned char gw, gw0, gw45, gw90, gw135;
@@ -1000,6 +1000,7 @@ void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][
 	for (x = 0; x < MAXXDIM; x++) {
 		for (y = 0; y < MAXYDIM; y++) {
 
+
 			kontrast = kontrast + (x - y)*(x - y) * normmatrix[x][y];
 		}
 	}
@@ -1029,4 +1030,154 @@ void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][
 		}
 	}
 */
+}
+
+
+void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+	
+
+
+	int mark[MAXXDIM][MAXYDIM];
+	
+	int x, y;
+	for (x = 0; x < MAXXDIM; x++) {
+		for (y = 0; y < MAXYDIM; y++) {
+			out[x][y] = 255;
+			mark[x][y] = 0;
+			//Reihe 1 und Spalte 1 ist Region 1
+			//mark[x][0] = 1;
+			//mark[0][y] = 1;
+		}
+	}
+
+	int regionzahl = 0;
+	int oben = 0, links = 0, erg;
+	int schwelle;
+
+	printf("\nSchwelle: ");
+	scanf("%i", &schwelle);
+
+	for (x = 1; x < MAXXDIM; x++) {
+		for (y = 1; y < MAXYDIM; y++) {
+
+
+			int xcxu = in[x][y] - in[x - 1][y];
+			int xcxl = in[x][y] - in[x][y - 1];
+
+
+			//if neue Region
+	/*		if ((xcxu * xcxu) < schwelle) {
+				oben = mark[x - 1][y];
+			}
+			else {
+				oben = 0;
+			}
+			if ((xcxl * xcxl) < schwelle) {
+				links = mark[x][y - 1];
+			}
+			else {
+				links = 0;
+			}*/
+			if ((-schwelle < xcxu) && (xcxu < schwelle)) {
+				oben = mark[x - 1][y];
+				if ((-schwelle < xcxl) && (xcxl < schwelle)) {
+					links = mark[x][y - 1];
+				}
+			}
+			else if ((-schwelle < xcxl) && (xcxl < schwelle)) {
+				links = mark[x][y - 1];
+				oben = 0;
+			}
+			//if (((-schwelle > xcxu) || (xcxu < schwelle)) && ((-schwelle > xcxl) || (xcxl < schwelle))) 
+			else {
+				links = 0;
+				oben = 0;
+			}
+
+
+
+
+			if (oben == links && oben != 0 && links != 0) {
+				mark[x][y] = oben;
+			}
+			else if (oben > 0 && links == 0) {
+				mark[x][y] = oben;
+			}
+			else if (oben == 0 && links > 0) {
+				mark[x][y] = links;
+			}
+			else if (oben == 0 && links == 0) {
+				regionzahl++;
+				mark[x][y] = regionzahl;
+			}
+			else if (oben > 0 && links > 0 && oben != links) {
+				int löschen;
+				if (oben < links) {
+					mark[x][y] = oben;
+					löschen = links;
+					erg = oben;
+				}
+				if (oben > links) {
+					mark[x][y] = links;
+					löschen = oben;
+					erg = links;
+				}
+
+				int i, j;
+				for (i = 0; i < MAXXDIM; i++) {
+					for (j = 0; j < MAXYDIM; j++) {
+						if (mark[i][j] == löschen) {
+							mark[i][j] = erg;
+						}
+					}
+				}
+
+				regionzahl--;
+
+			}
+
+		}
+	}
+
+	printf("Regionenanzahl: %i\n\n", regionzahl);
+	int i;
+	float gw = 0;
+	for (i = 1; i <= regionzahl; i++) {
+		x = 0;
+		y = 0;
+		for (int n = 0; n < 10; n++) {
+			while (mark[x][y] != i) {
+				x++;
+				if (x == MAXXDIM) {
+					x = 0;
+					y++;
+				}
+			}
+		}
+		gw = in[x][y];
+		
+		/*int n = 0;
+		for (x = 0; x < MAXXDIM; x++) {
+			for (y = 0; y < MAXYDIM; y++) {
+				if (mark[x][y] == i) {
+					gw = gw + in[x][y];
+					n++;
+				}
+			}
+		}
+
+		gw = gw / n;*/
+
+		for (x = 0; x < MAXXDIM; x++) {
+			for (y = 0; y < MAXYDIM; y++) {
+				if (mark[x][y] == i) {
+					out[x][y] = int (gw);
+				}
+			}
+		}
+
+
+	}
+
+
 }
