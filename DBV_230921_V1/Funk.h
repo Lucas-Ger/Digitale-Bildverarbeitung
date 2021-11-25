@@ -38,4 +38,4 @@ extern void Laws(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][
 
 extern void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
 
-extern void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);
+extern void  blob_coloring(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]);

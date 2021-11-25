@@ -28,6 +28,7 @@ int menu() //Menu-Funktion, gibt Möglichkeiten im Programm auf den Bildschirm au
 	printf("\n-DoG 17");
 	printf("\n-Laws 18");
 	printf("\n-Coocurrence 19");
+	printf("\n-Blob-coloring 20");
 	printf("\n-Programm beenden 0");
 	printf("\nIhre Eingabe:");
 	scanf("%i", &choice);		//wartet auf die Eingabe einer Zahl
@@ -1033,7 +1034,7 @@ void Coocurrence(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][
 }
 
 
-void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
+void  blob_coloring(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXYDIM]) {
 	
 
 
@@ -1065,19 +1066,6 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 			int xcxl = in[x][y] - in[x][y - 1];
 
 
-			//if neue Region
-	/*		if ((xcxu * xcxu) < schwelle) {
-				oben = mark[x - 1][y];
-			}
-			else {
-				oben = 0;
-			}
-			if ((xcxl * xcxl) < schwelle) {
-				links = mark[x][y - 1];
-			}
-			else {
-				links = 0;
-			}*/
 			if ((-schwelle < xcxu) && (xcxu < schwelle)) {
 				oben = mark[x - 1][y];
 				if ((-schwelle < xcxl) && (xcxl < schwelle)) {
@@ -1087,14 +1075,11 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 			else if ((-schwelle < xcxl) && (xcxl < schwelle)) {
 				links = mark[x][y - 1];
 				oben = 0;
-			}
-			//if (((-schwelle > xcxu) || (xcxu < schwelle)) && ((-schwelle > xcxl) || (xcxl < schwelle))) 
+			} 
 			else {
 				links = 0;
 				oben = 0;
 			}
-
-
 
 
 			if (oben == links && oben != 0 && links != 0) {
@@ -1110,26 +1095,14 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 				regionzahl++;
 				mark[x][y] = regionzahl;
 			}
-			else{			// if (oben > 0 && links > 0 && oben != links) {
-				int löschen;
-				//if (oben < links) {
-					mark[x][y] = oben;
-					löschen = links;
-					erg = oben;
-				/*}
-				else if (oben > links) {
-					mark[x][y] = links;
-					löschen = oben;
-					erg = links;
-				}*/
-
+			else{
+				mark[x][y] = oben;
 				int i, j;
 				i = x;
 				bool merker = false;
-				//for (i = 0; i < x; i++) {
 					for (j = y - 1; j > 0; j--) {
 						if ((-schwelle < (in[x][y] - in[i][j])) && ((in[x][y] - in[i][j]) < schwelle)) {
-							mark[i][j] = erg;
+							mark[i][j] = oben;
 							if (merker == false) {
 								regionzahl--;
 								merker = true;
@@ -1137,10 +1110,6 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 						}
 						else break;
 					}
-				//}
-
-
-
 			}
 
 		}
@@ -1150,19 +1119,6 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 	int i;
 	float gw = 0;
 	for (i = 1; i <= regionzahl; i++) {
-		/*x = 0;
-		y = 0;
-		for (int n = 0; n < 10; n++) {
-			while (mark[x][y] != i) {
-				x++;
-				if (x == MAXXDIM) {
-					x = 0;
-					y++;
-				}
-			}
-		}
-		gw = in[x][y];
-		*/
 		gw = 0;
 		int n = 0;
 		for (x = 0; x < MAXXDIM; x++) {

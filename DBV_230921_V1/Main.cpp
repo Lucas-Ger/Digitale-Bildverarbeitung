@@ -133,7 +133,7 @@ void main() {
 		else if (choice == 20)		//Auswahl 16 ist Coocurrence
 		{
 		readImage_ppm(in);
-		growing(in, out);
+		blob_coloring(in, out);
 		writeImage_ppm(out, 256, 256);
 		viewImage_ppm();
 		}
