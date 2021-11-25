@@ -1110,29 +1110,36 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 				regionzahl++;
 				mark[x][y] = regionzahl;
 			}
-			else if (oben > 0 && links > 0 && oben != links) {
+			else{			// if (oben > 0 && links > 0 && oben != links) {
 				int löschen;
-				if (oben < links) {
+				//if (oben < links) {
 					mark[x][y] = oben;
 					löschen = links;
 					erg = oben;
-				}
-				if (oben > links) {
+				/*}
+				else if (oben > links) {
 					mark[x][y] = links;
 					löschen = oben;
 					erg = links;
-				}
+				}*/
 
 				int i, j;
-				for (i = 0; i < MAXXDIM; i++) {
-					for (j = 0; j < MAXYDIM; j++) {
-						if (mark[i][j] == löschen) {
+				i = x;
+				bool merker = false;
+				//for (i = 0; i < x; i++) {
+					for (j = y - 1; j > 0; j--) {
+						if ((-schwelle < (in[x][y] - in[i][j])) && ((in[x][y] - in[i][j]) < schwelle)) {
 							mark[i][j] = erg;
+							if (merker == false) {
+								regionzahl--;
+								merker = true;
+							}
 						}
+						else break;
 					}
-				}
+				//}
 
-				regionzahl--;
+
 
 			}
 
@@ -1143,7 +1150,7 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 	int i;
 	float gw = 0;
 	for (i = 1; i <= regionzahl; i++) {
-		x = 0;
+		/*x = 0;
 		y = 0;
 		for (int n = 0; n < 10; n++) {
 			while (mark[x][y] != i) {
@@ -1155,8 +1162,9 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 			}
 		}
 		gw = in[x][y];
-		
-		/*int n = 0;
+		*/
+		gw = 0;
+		int n = 0;
 		for (x = 0; x < MAXXDIM; x++) {
 			for (y = 0; y < MAXYDIM; y++) {
 				if (mark[x][y] == i) {
@@ -1166,7 +1174,7 @@ void growing(unsigned char in[MAXXDIM][MAXYDIM], unsigned char out[MAXXDIM][MAXY
 			}
 		}
 
-		gw = gw / n;*/
+		gw = gw / n;
 
 		for (x = 0; x < MAXXDIM; x++) {
 			for (y = 0; y < MAXYDIM; y++) {
